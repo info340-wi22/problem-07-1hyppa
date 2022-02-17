@@ -11,21 +11,17 @@ const headerArray = ['Name', 'State', 'Phone', 'Twitter'];
 export function App(props) {
   return (
     <div className='container'>
-      <h1>US Senators (Jan 2021)</h1>
-      <SenatorTable />
+      <h1>US Senators (Jan 2022)</h1>
+      <SenatorTable senators={props.senators}/>
     </div>
   )
 }
 
 export function SenatorTable(props) {
-  // let senatorArr = props.senators.map((element) => {
-  //   return (<SenatorRow key={element.id}/>)
-
-  // })
-  let senatorArr = EXAMPLE_SENATORS.map((element) => {
-    return <SenatorRow key={element.id}/>
+  let senatorArr = props.senators.map((element) => {
+    return <SenatorRow senator={element} key={element.id}/>
   })
-  console.log(senatorArr);
+  console.log(senatorArr.name);
   return (
     <table className='table table-bordered'>
       <TableHeader columnNames={headerArray} />
@@ -50,13 +46,13 @@ export function TableHeader(props) {
 }
 
 export function SenatorRow(props) {
-  const {id, name, state, party, phone, twitter} = props;
+  const {id, name, state, party, phone, twitter} = props.senator;
   return (
-    <tr key={id}>
+    <tr>
       <td>{name}</td>
-      <td>{state}</td>
-      <td>{phone}</td>
-      <td>{twitter}</td>
+      <td>{party.charAt(0) + " - " + state}</td>
+      <td><a href={"tel:" + phone}>{phone}</a></td>
+      <td><a href={"https://twitter.com/" + twitter}>{"@" + twitter}</a></td>
     </tr>
   )
 }
