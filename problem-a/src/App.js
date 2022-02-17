@@ -46,7 +46,7 @@ export function TableHeader(props) {
 }
 
 export function SenatorRow(props) {
-  const {id, name, state, party, phone, twitter} = props.senator;
+  const {name, state, party, phone, twitter} = props.senator;
   return (
     <tr>
       <td>{name}</td>
