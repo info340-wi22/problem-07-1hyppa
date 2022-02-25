@@ -5,11 +5,42 @@ import _ from 'lodash'; //import external library!
 export default function GameDataTable(props) {
 
   //Your work goes here
+  const [sortByCriteria, setSortByCriteria] = useState(null);
+  const [isAscending, setIsAscending] = useState(null);
+
+  const handleClick = function (event) {
+    if (event.currentTarget.name !== sortByCriteria) {
+      setSortByCriteria(event.currentTarget.name);
+      setIsAscending(true);
+    } else {
+      if (isAscending) {
+        setIsAscending(false);
+      } else {
+        setIsAscending(null);
+        setSortByCriteria(null);
+      }
+    }
+  }
+
+  let sortedArr = _.sortBy(props.data, sortByCriteria);
+  // sort criteria is not null & isn't ascending
+  if (sortByCriteria != null && !isAscending) {
+    _.reverse(sortedArr);
+  }
+
 
   //convert data into rows
-  const rows = props.data.map((match) => {
+  const rows = sortedArr.map((match) => {
     return <GameDataRow key={match.year} game={match} />
   });
+
+  function determinePropBoolean(sortButtonName) {
+    if(sortButtonName === sortByCriteria && isAscending) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   return (
     <div className="table-responsive">
@@ -18,19 +49,19 @@ export default function GameDataTable(props) {
           <tr>
             <th>
               Year
-              <SortButton name="year" />
+              <SortButton name="year" onClick={handleClick} active={"year" === sortByCriteria} ascending={determinePropBoolean("year")}/>
             </th>
             <th className="text-end">
               Winner
-              <SortButton name="winner" />
+              <SortButton name="winner" onClick={handleClick} active={"winner" === sortByCriteria} ascending={determinePropBoolean("winner")}/>
             </th>
             <th className="text-center">
               Score
-              <SortButton name="score" />
+              <SortButton name="score" onClick={handleClick} active={"score" === sortByCriteria} ascending={determinePropBoolean("score")}/>
             </th>
             <th>
               Runner-Up
-              <SortButton name="runner_up" />
+              <SortButton name="runner_up" onClick={handleClick} active={"runner_up" === sortByCriteria} ascending={determinePropBoolean("runner_up")}/>
             </th>
           </tr>
         </thead>
@@ -43,11 +74,13 @@ export default function GameDataTable(props) {
 }
 
 //Component for managing display logic of sort button
-//Props: 
+//Props:
 //  `active` [boolean] if icon should be highlighted,
 //  `ascending` [boolean] if icon should be in ascending order (flipped)
 //  `onClick` [function] click handler (passthrough)
 function SortButton(props) {
+  // console.log(props.ascending);
+  // console.log(props.onClick);
   let iconClasses = ""
   if (props.active) { iconClasses += ` active` }
   if (props.ascending) { iconClasses += ` flip` };
